@@ -7,6 +7,8 @@ import app from './app.js';
 import { connectDB } from './config/db.js';
 import { initSocket } from './sockets/socketManager.js';
 import { startHeartbeatWatchdog } from './services/heartbeatWatchdog.js';
+import User from './models/User.js';
+import { seedDatabase } from './seeds/seed.js';
 
 const PORT = process.env.PORT || 5000;
 
@@ -14,6 +16,17 @@ const startServer = async () => {
   try {
     // 1. Connect Database
     await connectDB();
+
+    // Auto-seed initial dataset if database is brand new / has no users
+    try {
+      const userCount = await User.countDocuments();
+      if (userCount === 0) {
+        console.log('[Server] No users detected in database. Automatically running initial seed...');
+        await seedDatabase(true);
+      }
+    } catch (seedCheckErr) {
+      console.warn(`[Server] Auto-seed check notice: ${seedCheckErr.message}`);
+    }
 
     // 2. Create HTTP & Socket.IO server
     const server = http.createServer(app);

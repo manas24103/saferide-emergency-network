@@ -13,10 +13,12 @@ import AuditLog from '../models/AuditLog.js';
 import SystemSetting from '../models/SystemSetting.js';
 import { connectDB, closeDB } from '../config/db.js';
 
-const seedDatabase = async () => {
+export const seedDatabase = async (autoSeed = false) => {
   try {
-    console.log('[Seeder] Connecting to database...');
-    await connectDB();
+    if (!autoSeed) {
+      console.log('[Seeder] Connecting to database...');
+      await connectDB();
+    }
 
     console.log('[Seeder] Cleaning existing collections...');
     await Promise.all([
@@ -610,12 +612,19 @@ const seedDatabase = async () => {
     console.log('3. Driver:      driver@saferide.io / Password@123');
     console.log('======================================================\n');
 
-    await closeDB();
-    process.exit(0);
+    if (!autoSeed) {
+      await closeDB();
+      process.exit(0);
+    }
   } catch (err) {
     console.error(`[Seeder] Error during database seeding: ${err.message}`);
-    process.exit(1);
+    if (!autoSeed) {
+      process.exit(1);
+    }
   }
 };
 
-seedDatabase();
+import { fileURLToPath } from 'url';
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  seedDatabase();
+}
