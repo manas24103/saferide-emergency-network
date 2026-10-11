@@ -20,6 +20,9 @@ import { apiLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
 
+// Trust reverse proxy headers (Render, Heroku, Cloudflare)
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(
   helmet({
