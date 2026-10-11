@@ -1,0 +1,15 @@
+{
+  "name": "wireless-sos-emergency-system",
+  "version": "2.4.0",
+  "description": "Wireless SOS / Emergency Response System for Cab Services and Public Transport - Research Prototype",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "seed": "cd server && npm run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
